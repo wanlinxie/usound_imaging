@@ -4,7 +4,7 @@
 %
 % June 14, 2017
 %
-% USAGE: generate_data(integer mock_size, ['random'|'gradient'],
+% USAGE: generate_data(integer mock_size, ['random'|'gradient'|'object'],
 % ['ideal'|'nonideal])
 % INPUT: integer - mock_size; integer - angle_sweep; arguments - 'random' or 'radient'
 % OUTPUT: integer - angle_count; integer - sample_count; array - angles; 2D
@@ -27,6 +27,16 @@ function [angle_count, sample_count, angles, intensity] = generate_data(mock_siz
         % Generate a matrix of linearlly increasing values
         intensity = linspace(0, 100, mock_size)';
         intensity = repmat(intensity, 1, mock_size);
+    elseif (strcmp(varargin{1}, 'object'))
+        % Generate a matrix of linearlly increasing values
+        intensity = 100*zeros(mock_size);
+        % Generate a random 'block' of random size
+        x = rand();
+        y = x + rand() * ((1-x));
+        a = round((x * mock_size));
+        b = round((y * mock_size));
+        intensity(a:b,a:b) = 80;
+        intensity(:,:) = intensity(:,:) + 50*(rand(mock_size)-0.5);
     end
     
     if(strcmp(varargin{2}, 'ideal'))
