@@ -44,19 +44,23 @@ function [angle_count, sample_count, angles, intensity] = generate_data(mock_siz
         angles = linspace(0, angle_sweep, mock_size);
     elseif(strcmp(varargin{2}, 'nonideal'))
         % Generate an array of random angles (0-100)
-        angles = round(rand(1, mock_size) * ((angle_sweep) + 1));
+        angles = linspace(0, angle_sweep, mock_size);
+        %angles = round(rand(1, mock_size) * ((angle_sweep) + 1));
+        if(strcmp(varargin{1}, 'object'))
+            angles = linspace(0, angle_sweep, mock_size);
+        end
+        
         % Cut-up the square matrix of intensity values
         % We want beams to be of different lengths
         lengths = floor(rand(1, mock_size) * (mock_size+1));
         for i = 1:mock_size
-           if lengths(i) == 0
-               intensity([1:mock_size], i) = 0; 
+           if lengths(i) < (mock_size/10)
+               %intensity([1:mock_size], i) = 0; 
            else
-               intensity([lengths(i):mock_size], i) = 0;
+               intensity([lengths(i):mock_size], i) = intmax;
            end
         end
     end
-    
     % Take the dimensions of (intensity)
     sample_count = size(intensity, 1);
     angle_count = size(intensity, 2);

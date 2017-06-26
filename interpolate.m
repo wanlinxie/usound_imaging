@@ -15,12 +15,11 @@
 % are calculated as the inverse of the distance between the pixel and the
 % data point.
 
-function grid = interpolate(position_matrix, angle_count, sample_count, intensity, grid, grid_width, grid_height, sector_span)
+function [grid, interpolation_grid] = interpolate(interpolation_grid, position_matrix, angle_count, sample_count, intensity, grid, grid_width, grid_height, sector_span)
 % interpolation_grid is a cell array that corresponds to the pixels
 % represented in grid. Each ordered pair (r,c) in interpolation grid
 % contains two arrays: 1) values, 2) weights used to calculate the value of
 % the pizel
-interpolation_grid = cell(grid_height, grid_width, 2);
 
 % Iterate over the adjusted position matrix
 for i = 1:angle_count
@@ -28,10 +27,11 @@ for i = 1:angle_count
         
         p_x = position_matrix(j,i,1);
         p_y = position_matrix(j,i,2);
-        
+        %j
+        %i
         % Create boundary points for interpolation
         if (i-sector_span) <= 0
-            x_start = position_matrix(j,i+sector_span,1);
+            x_start = position_matrix(j,sector_span,1);
             x_end = position_matrix(j+1,1,1); % i -> 1
         elseif (i+sector_span) > (angle_count)
             x_start = position_matrix(j+1,angle_count,1);
@@ -55,7 +55,11 @@ for i = 1:angle_count
                 
                 % The inverse of the distance corresponds to the value's
                 % weight
-                if distance == 0
+                
+                % DEBUGGING - should 'cut off' values have a weight?
+                if intensity(j, i) == intmax
+                    weight = 0;
+                elseif distance == 0
                     weight = 2;
                 else
                     weight = 1/distance;
