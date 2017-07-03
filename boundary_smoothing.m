@@ -20,7 +20,7 @@ boundary_line = ones( boundary_count, 2);
 
 % Right Side
 % Build the boundary line
-rho = [1 : boundary_count]';
+rho = (1 : boundary_count)';
 boundary_line(:,1) = rho .* cosd(adjusted_angles(1));
 boundary_line(:,2) = rho .* sind(adjusted_angles(1));
 boundary_line = round(boundary_line);
@@ -38,7 +38,7 @@ end
 
 % Left Side
 % Build the boundary line
-rho = [1 : boundary_count]';
+rho = (1 : boundary_count)';
 boundary_line(:,1) = rho .* cosd(adjusted_angles(angle_count));
 boundary_line(:,2) = rho .* sind(adjusted_angles(angle_count));
 boundary_line = round(boundary_line);

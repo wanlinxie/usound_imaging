@@ -16,15 +16,15 @@
 % EXAMPLE: position_matrix(5,3,2) contains the Y-coordinate for the
 % intensity value in intensity(5,3)
 
-function [position_matrix] = pol2cart(angles, angle_count, intensity, sample_count)
+function [position_matrix] = pol2cart(angles, angle_count, sample_count)
     % [X, Y]
     position_matrix = zeros(sample_count, angle_count, 2);
 
     % i = column #; j = row #
     % Iterate through columns
-    for i = 1:size(intensity, 2)
+    for i = 1:angle_count
         % Iterate through rows
-        for j = 1:size(intensity, 1)
+        for j = 1:sample_count
             % Caculate catesian position information
             position_matrix(j,i,1) = j * cosd(angles(i));
             position_matrix(j,i,2) = j * sind(angles(i));

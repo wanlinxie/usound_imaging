@@ -15,17 +15,21 @@
 % [position_matrix_adjusted], which holds the coordinates to the
 % intensities after being plotted on [grid].
 
-function [grid] = plot_to_grid(position_matrix, angle_count, sample_count, intensity, grid, grid_resolution)
+function [grid, plot_grid] = plot_to_grid(plot_grid, position_matrix, angle_count, sample_count, intensity, grid)
     %% Map position_matrix information over the blank grid
     % Iterate through columns of the position/intensity matrices
+
     for i = 1:angle_count
         % Iterate through row of data
         for j = 1:sample_count
+            y = position_matrix(j,i,2);
+            x = position_matrix(j,i,1);
             % Do not plot undefined values
             if(intensity(j, i) == intmax)
-                grid(position_matrix(j,i,2), position_matrix(j,i,1)) = 0;
+                grid(y,x) = 0;
             else
-                grid(position_matrix(j,i,2), position_matrix(j,i,1)) = intensity(j,i);
+                plot_grid{y,x} = [plot_grid{y,x} intensity(j,i)];
+                grid(y,x) = sum(plot_grid{y,x}) ./ length(plot_grid{y,x});
             end
         end
     end

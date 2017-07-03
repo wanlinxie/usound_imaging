@@ -11,11 +11,10 @@
 % init_grid takes the number of angles and samples taken at each angle,
 % along with a resolution coefficient and produces a blank grid.
 
-function [grid, grid_width, grid_height] = init_grid(angle_count, sample_count, resolution)
-
+function [grid, grid_width, grid_height] = init_grid(grid_width, grid_height, resolution)
     % Initialize blank grid
-    grid_width = angle_count .* resolution;
-    grid_height = sample_count .* resolution;
+    grid_width = 2 .* grid_width .* resolution;
+    grid_height = grid_height .* resolution;
     grid = zeros(grid_height, grid_width);
 
 end

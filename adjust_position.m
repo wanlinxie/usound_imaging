@@ -13,10 +13,10 @@
 
 function position_matrix_adjusted = adjust_position(position_matrix, grid_width, grid_resolution)
     position_matrix_adjusted = position_matrix;
-    
-    % Center position_matrix values (no negative positions in grid)
-    position_matrix_adjusted(:,:,1) = position_matrix(:,:,1) + (grid_width/2);
-    
+
     % Adjust points relative to the grid's resolution
     position_matrix_adjusted = round(position_matrix_adjusted .* grid_resolution);
+    
+    % Center position_matrix values (no negative positions in grid)
+    position_matrix_adjusted(:,:,1) = round(position_matrix(:,:,1) + grid_width./2 + 1);
 end
