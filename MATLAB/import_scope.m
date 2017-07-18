@@ -98,11 +98,11 @@ for i = 1:length(locs_Tx)-1
    end
 end
 
-intensity(intensity > TX_PULSE) = 0;
+%intensity(intensity > TX_PULSE) = 0;
 
 f1 = figure(1);
 subplot(1,3,1)
-plot(envelopeSig(PLOT_RANGE));
+plot(envelopeSig(PLOT_RANGE), 'o');
 title(['Envelope']);
 
 subplot(1,3,2)
