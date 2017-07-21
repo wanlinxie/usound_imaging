@@ -5,7 +5,7 @@ close all;
 
 % Plot the input data
 figure(1)
-imshow((I));
+image(I,'CDataMapping','scaled');
 title('Input Data)')
 
 [M N]=size(I);
@@ -16,8 +16,8 @@ end
 I=imresize(I,[dim dim]);
 [M N]=size(I)
 figure(2)
-imshow((I));
-colormap()
+image(I,'CDataMapping','scaled');
+%colormap()
 
 %rotate pi/2
 I=imrotate(I,90);

@@ -1,6 +1,6 @@
-TX_PULSE = 0.6;
-MAX_SCAN_LEN = 18;
-PLOT_RANGE = 1:100;
+TX_PULSE = 0.7;
+MAX_SCAN_LEN = 2000;
+PLOT_RANGE = 1:10000;
 
 %% Import Data from Files
 path = '../data/';
@@ -8,8 +8,11 @@ path = '../data/';
 %filename1 = 'mechscan1_24.h5';
 %dset1 = sprintf('/Waveforms/channel2\n/channel2\n Data');
 
-filename1 = 'shrunkengelatin.h5';
-dset1 = sprintf('/Waveforms/Channel 2/Channel 2 Data');
+% filename1 = 'shrunkengelatin.h5';
+% dset1 = sprintf('/Waveforms/Channel 2/Channel 2 Data');
+
+filename1 = 'trial3.0.h5';
+dset1 = sprintf('/Waveforms/Channel 1/Channel 1 Data');
 
 signal = h5read([path filename1], dset1);
 signal = abs(signal)-0.2;
@@ -88,11 +91,13 @@ for i = 1:length(locs_Tx)-1
        if(~isempty(line))
            %length(line)
            lens = [lens length(line)];
+           
 %            disp('++++++++++')
 %            size(intensity)
 %            size(line)
 %            range
 %            line
+
            intensity = [intensity line];
        end
    end
