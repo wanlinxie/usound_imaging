@@ -1,7 +1,10 @@
-TX_PULSE = 0.7;
-MAX_SCAN_LEN = 2000;
+TX_PULSE = 1.04;
+% TX_PULSE = 0.8;
+MAX_SCAN_LEN = 62;
+% MAX_SCAN_LEN = 17;
 PLOT_RANGE = 1:10000;
-
+%PLOT_RANGE = 1:62500;
+%PLOT_RANGE = 30750:31000;
 %% Import Data from Files
 path = '../data/';
 
@@ -11,11 +14,18 @@ path = '../data/';
 % filename1 = 'shrunkengelatin.h5';
 % dset1 = sprintf('/Waveforms/Channel 2/Channel 2 Data');
 
-filename1 = 'trial3.0.h5';
-dset1 = sprintf('/Waveforms/Channel 1/Channel 1 Data');
+filename1 = 't10_0.h5';
+dset1 = sprintf('/Waveforms/channel1\n/channel1\n Data');
+
+% filename1 = 'scope_2.csv';
+% dset1 = sprintf('/Waveforms/Channel1/Channel 1 Data');
 
 signal = h5read([path filename1], dset1);
 signal = abs(signal)-0.2;
+%signal = abs(signal)-0.01;
+
+% signal = csvread(filename1,1,0);
+% signal = abs(signal);
 
 %% Extract Envelope
 %envelopeUpper = signal;
@@ -97,13 +107,20 @@ for i = 1:length(locs_Tx)-1
 %            size(line)
 %            range
 %            line
-
-           intensity = [intensity line];
+           iintensit = intensity;
+%            intensity = [intensity line];
+           intensity = [intensity line(1:62)];
+           
+           %intensity(intensity == 0) = 1 ;
+           %intensity = [abs(log(abs(intensity))) line];
        end
    end
 end
 
 %intensity(intensity > TX_PULSE) = 0;
+%intensity = intensity.*intensity;
+intensity = intensity(1:55,:);
+%intensity = intensity(1:14,:);
 
 f1 = figure(1);
 subplot(1,3,1)
