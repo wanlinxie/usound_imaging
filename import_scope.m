@@ -1,83 +1,90 @@
-TX_PULSE = 0.6;
-MAX_SCAN_LEN = 320;
-PLOT_RANGE = 12500:13000;
+PLOT_RANGE = 1:1000; % Range of samples to plot
 
 %% Import Data from Files
-path = '../../Scans/';
+path = './data/';
+
+%% MECHSCAN1_24
+% Contains raw signal data -- be sure to extract envelope
+TX_PULSE = 0.8;
+MAX_SCAN_LEN = 340;
 filename1 = 'mechscan1_24.h5';
 dset1 = sprintf('/Waveforms/channel2\n/channel2\n Data');
-filename2 = 'mechscan1_25.h5';
-dset2 = sprintf('/Waveforms/channel3\n/channel3\n Data');
-
 signal = h5read([path filename1], dset1);
-
-%% Apply Log Gain and Extract Envelope
-%signal = mag2db(signal);
+signal = abs(signal);
 [envelopeUpper, envelopeLower] = envelope(signal);
-envelopeSig = envelopeUpper;
-%envelope = h5read([path filename2], dset2);
+signal_envelope = envelopeUpper;
+envelope1 = signal_envelope;
 
-%% Zero-out the data scale
+% %% SHRUNKENGELATIN
+% % Contains enveloped data -- no need to extract envelope
+% TX_PULE = 1;
+% MAX_SCAN_LEN = 18;
+% 
+% filename1 = 'shrunkengelatin.h5';
+% dset1 = sprintf('/Waveforms/Channel 2/Channel 2 Data');
+% signal = h5read([path filename1], dset1);
+% signal = abs(signal);
+% signal_envelope = signal;
+% envelope1 = signal_envelope;
+
+%% Collect Transmission Peak Information
 % Find peaks and locations of peaks
-% TODO: replace/rewrite findpeaks()
-% ONLY NEED THE FIRST TX PEAK for this
-[pks, locs] = findpeaks(envelopeSig);
+% TODO: replace/rewrite findpeaks() from scratch
+
+[pks, locs] = findpeaks(signal_envelope);
+
+% pks_Tx and locs_Tx contain the value and location of Tx peaks
 pks_Tx = pks;
 pks_Tx(pks < TX_PULSE) = [];
 locs_Tx = locs;
 locs_Tx(pks < TX_PULSE) = [];
 
-% From the beginnning up to the first Tx
-range = (1:locs_Tx(1));
-avg = mean(envelopeSig(range));
-first_peak = find((pks >= TX_PULSE), 1) - 1;
-range_pks = (1:first_peak);
-avg_threshold = mean(pks(range_pks)) - avg;
-
-envelope1 = envelopeSig;
-% Zero-out and remove data below the threshold
-envelope1 = envelope1 - avg;
-envelope1(envelope1 <= avg_threshold) = 0;
-
 %% Seperate [envelope] into segments
-% Calculate Peaks
-% TOFO: replace/reqrite findpeaks()
-[pks, locs] = findpeaks(envelope1);
-envelope2 = envelope1;
-
 % Iterate over each peak
-intensity = [];
-lens = [];
-end_idx = 1;
-for pk_loc = locs_Tx'
-   % Find the beginning of the peak
-   temp = envelope1(1:pk_loc);
-   start_idx = find((temp == 0), 1, 'last');
+intensity = []; % matrix of intensities
+lens = []; % length of each scan line
+
+% Iterate over each transmission peak
+for i = 1:length(locs_Tx)-1
+   pk_loc = locs_Tx(i);
    
-   line = envelope1(end_idx:start_idx);
-   line(MAX_SCAN_LEN) = 0;
-   
-   temp = envelope1(pk_loc:end);
-   end_idx = find((temp == 0), 1) + pk_loc;
-   envelope2(start_idx:end_idx) = 0;
-   
-   
-   % Add scan data to intensity matrix
-   if(~isempty(line))
-       lens = [lens length(line)];
-       intensity = [intensity line];
+   % A scan is considered any data right after the transmission pulse and
+   % right before the next transmission pulse
+   range = (pk_loc+1):(locs_Tx(i+1)-1);
+   lens = [lens length(range)];
+   if(length(range) > 1)
+       line = signal_envelope(range);
+       line(MAX_SCAN_LEN) = 0;
+
+       % Add scan data to intensity matrix
+       if(~isempty(line))
+           intensity = [intensity line];
+       end
    end
 end
 
-% f1 = figure();
-% subplot(1,3,1)
-% plot(envelopeSig(PLOT_RANGE));
-% title(['Envelope']);
-% 
-% subplot(1,3,2)
-% plot(envelope1(PLOT_RANGE));
-% title(['Zeroed Out']);
-% 
-% subplot(1,3,3)
-% plot(envelope2(PLOT_RANGE));
-% title(['Tx Removed']);
+temp_intensity = intensity;
+temp_intensity(intensity > TX_PULSE) = 0;
+
+f1 = figure(1);
+plot(signal_envelope(PLOT_RANGE));
+title(['Envelope']);
+
+f2 = figure(2);
+image(temp_intensity, 'CDataMapping', 'scaled');
+title(['Intensity - Including Partial Scan Lines']);
+
+% Remove empty columns
+temp_intensity = intensity;
+intensity = [];
+length_threshold = mean(lens);
+for i = 1:size(temp_intensity, 2)
+   if(size(nonzeros(temp_intensity(:,i)), 1) >= length_threshold)
+      intensity = [intensity temp_intensity(:,i)];
+   end
+end
+intensity(intensity > TX_PULSE) = 0;
+
+f3 = figure(3);
+image(intensity, 'CDataMapping', 'scaled');
+title(['Intensity - After Removing Partial Scan Lines']);
