@@ -26,12 +26,12 @@ boundary_line(:,2) = rho .* sind(adjusted_angles(1));
 boundary_line = round(boundary_line);
 
 % Center position_matrix values
-boundary_line(:,1) = boundary_line(:,1) + (grid_width/2);
+boundary_line(:,1) = boundary_line(:,1) + ceil((grid_width/2));
 
 % Start zeroing values
 for i = 1:boundary_count
     r = boundary_line(i,2);
-    for c = boundary_line(i,1):grid_height
+    for c = boundary_line(i,1):grid_width
         grid(r,c) = 0;
     end
 end
@@ -64,7 +64,7 @@ boundary_line(:,2) = (rho * grid_resolution) .* sind(boundary_angles);
 boundary_line = round(boundary_line);
 
 % Center position_matrix values
-boundary_line(:,1) = boundary_line(:,1) + (grid_width/2);
+boundary_line(:,1) = boundary_line(:,1) + ceil((grid_width/2));
 
 % Start zeroing values
 for i = 1:boundary_count
@@ -84,7 +84,7 @@ boundary_line(:,2) = (rho * grid_resolution) .* sind(boundary_angles);
 boundary_line = round(boundary_line);
 
 % Center position_matrix values
-boundary_line(:,1) = boundary_line(:,1) + (grid_width/2);
+boundary_line(:,1) = boundary_line(:,1) + ceil((grid_width/2));
 
 % Start zeroing values
 for i = 1:boundary_count
