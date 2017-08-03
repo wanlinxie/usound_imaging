@@ -4,26 +4,27 @@
 %
 % June 14, 2017
 %
-% INPUT: integer - angle_count; integer - sample_count; integer -
-% resolution
-% OUTPUT: 2D array - grid; integer - grid_width; integer - grid_height
+% INPUT: 2D array - grid; 2D array - position_matrix; integer -
+% angle_count; integer - sample_count; integer - white_value
+% OUTPUT: 2D array - new_grid
 %
-% init_grid takes the number of angles and samples taken at each angle,
-% along with a resolution coefficient and produces a blank grid.
+% draw_bounds creates an outline around the plotted data, to differentiate
+% it from the background. The outline is of color [white_value].
 
-function [grid] = draw_bounds(grid, position_matrix, angle_count, sample_count, white)
+function [new_grid] = draw_bounds(grid, position_matrix, angle_count, sample_count, white_value)
+    new_grid = grid;
     right_boundary = position_matrix(:,1,:);
     left_boundary = position_matrix(:,angle_count,:);
     upper_boundary = position_matrix(1,:,:);
     lower_boundary = position_matrix(sample_count,:,:);
     
-    intensity = ones(sample_count,1) .* white;
-    grid = draw(right_boundary, 1, sample_count, intensity, grid);
-    grid = draw(left_boundary, 1, sample_count, intensity, grid);
+    intensity = ones(sample_count,1) .* white_value;
+    new_grid = draw(right_boundary, 1, sample_count, intensity, new_grid);
+    new_grid = draw(left_boundary, 1, sample_count, intensity, new_grid);
     
-    intensity = ones(1, angle_count) .* white;
-    grid = draw(upper_boundary, angle_count, 1, intensity, grid);
-    grid = draw(lower_boundary, angle_count, 1, intensity, grid);
+    intensity = ones(1, angle_count) .* white_value;
+    new_grid = draw(upper_boundary, angle_count, 1, intensity, new_grid);
+    new_grid = draw(lower_boundary, angle_count, 1, intensity, new_grid);
     
 end
 

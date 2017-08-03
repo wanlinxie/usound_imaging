@@ -19,5 +19,5 @@ function [sorted_angles, sorted_intensity] = sort_data(angles, intensity)
        sorted_intensity = temp';
     else
         disp('ERROR in sorted_angles');
-        disp('length(angles) == size(intensity, 1)');
-        disp('Check dimensions?');end
+        disp('Check dimensions?');
+    end

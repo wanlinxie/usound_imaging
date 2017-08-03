@@ -43,36 +43,41 @@ for i = 1:angle_count
         y_start = position_matrix(j-1,i,2);
         y_end = position_matrix(j+1,i,2);
         
-        % Iterate within boundaries
-        for y  = y_start:y_end
-            for x = x_start:x_end
-                % Add this value to the pixel's value array
-                interpolation_grid{y,x,1} = [interpolation_grid{y,x,1} intensity(j, i)];
-                
-                % Calculate distance between this pixel and the pixel in
-                % position_matrix
-                distance = sqrt( (x - p_x)^2 + (y - p_y)^2 );
-                
-                % The inverse of the distance corresponds to the value's
-                % weight
-                
-                % DEBUGGING - should 'cut off' values have a weight?
-                if intensity(j, i) == intmax
-                    weight = 0;
-                elseif distance == 0
-                    weight = 2;
-                else
-                    weight = 1/distance;
-                end
+        if( (y_end-y_start) > 2 && (x_end-x_start) > 2 )
+            % Iterate within boundaries
+            for y  = y_start:y_end
+                for x = x_start:x_end
+                    % Add this value to the pixel's value array
+                    interpolation_grid{y,x,1} = [interpolation_grid{y,x,1} intensity(j, i)];
 
-                interpolation_grid{y,x,2} = [interpolation_grid{y,x,2} weight];
-                
-                % Calculate the weighted average
-                weighted_average = sum(interpolation_grid{y,x,1} .* interpolation_grid{y,x,2}) ./ sum(interpolation_grid{y,x,2});
-                
-                % Assign the weighted average to the pixel
-                grid(y,x) = weighted_average;
+                    % Calculate distance between this pixel and the pixel in
+                    % position_matrix
+                    distance = sqrt( (x - p_x)^2 + (y - p_y)^2 );
+
+                    % The inverse of the distance corresponds to the value's
+                    % weight
+
+                    % DEBUGGING - should 'cut off' values have a weight?
+                    if intensity(j, i) == intmax
+                        weight = 0;
+                    elseif distance == 0
+                        weight = 2;
+                    else
+                        weight = 1/distance;
+                    end
+
+                    interpolation_grid{y,x,2} = [interpolation_grid{y,x,2} weight];
+
+                    % Calculate the weighted average
+                    weighted_average = sum(interpolation_grid{y,x,1} .* interpolation_grid{y,x,2}) ./ sum(interpolation_grid{y,x,2});
+
+                    % Assign the weighted average to the pixel
+                    grid(y,x) = weighted_average;
+                end
             end
+            
+        else
+            grid(y,x) = intensity(j
         end
     end
 end
