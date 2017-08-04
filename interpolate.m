@@ -5,8 +5,8 @@
 % June 14, 2017
 %
 % INPUT: 2D matrix - position_matrix; integer angle_count; integer -
-% sample_count; 2D matrix - intensity; 2D matrix - grid; integer -
-% grid_width; integer - grid_height; integer - sector_span 
+% sample_count; 2D matrix - intensity; 2D matrix - grid;
+% integer - sector_span 
 % OUTPUT: 2D matrx - grid
 %
 % interpolate() fills in the blank spaces between data from [position_matrix]
@@ -15,11 +15,11 @@
 % are calculated as the inverse of the distance between the pixel and the
 % data point.
 
-function [grid, interpolation_grid] = interpolate(interpolation_grid, position_matrix, angle_count, sample_count, intensity, grid, grid_width, grid_height, sector_span)
+function [grid, interpolation_grid] = interpolate(interpolation_grid, position_matrix, angle_count, sample_count, intensity, grid, sector_span)
 % interpolation_grid is a cell array that corresponds to the pixels
 % represented in grid. Each ordered pair (r,c) in interpolation grid
 % contains two arrays: 1) values, 2) weights used to calculate the value of
-% the pizel
+% the pixel
 
 % Iterate over the adjusted position matrix
 for i = 1:angle_count
@@ -27,8 +27,7 @@ for i = 1:angle_count
         
         p_x = position_matrix(j,i,1);
         p_y = position_matrix(j,i,2);
-        %j
-        %i
+
         % Create boundary points for interpolation
         if (i-sector_span) <= 0
             x_start = position_matrix(j,sector_span,1);
@@ -77,7 +76,7 @@ for i = 1:angle_count
             end
             
         else
-            grid(y,x) = intensity(j
+            grid(p_y,p_x) = intensity(j, i);
         end
     end
 end

@@ -1,9 +1,20 @@
-PLOT_RANGE = 1:1000; % Range of samples to plot
+% This script reads in data from an h5 file exported from the oscilloscope.
+% The data in the h5 file is one continuous timeseries. This script
+% attempts to split the signal into several scan lines by interpreting
+% signals above a specified threshold as the inital transmit signal of a 
+% certain scan.
+% Short columns of high intensity are produced as a result of a specified
+% threshold not exactly matching a transmit signal's peak value. This
+% script remedies this by selecting only columns above the mean length to
+% save and pass onto plotting functions.
+%
+% This processing should become unnecessary once we are able to recieve 
+% data directly from the STM32.
 
 %% Import Data from Files
 path = './data/';
 
-%% MECHSCAN1_24
+% MECHSCAN1_24
 % Contains raw signal data -- be sure to extract envelope
 TX_PULSE = 0.8;
 MAX_SCAN_LEN = 340;
@@ -15,7 +26,7 @@ signal = abs(signal);
 signal_envelope = envelopeUpper;
 envelope1 = signal_envelope;
 
-% %% SHRUNKENGELATIN
+%% SHRUNKENGELATIN
 % % Contains enveloped data -- no need to extract envelope
 % TX_PULE = 1;
 % MAX_SCAN_LEN = 18;
@@ -67,10 +78,12 @@ temp_intensity = intensity;
 temp_intensity(intensity > TX_PULSE) = 0;
 
 f1 = figure(1);
+PLOT_RANGE = 1:1000; % Range of samples to plot
 plot(signal_envelope(PLOT_RANGE));
 title(['Envelope']);
 
 f2 = figure(2);
+subplot(2,1,1);
 image(temp_intensity, 'CDataMapping', 'scaled');
 title(['Intensity - Including Partial Scan Lines']);
 
@@ -85,6 +98,6 @@ for i = 1:size(temp_intensity, 2)
 end
 intensity(intensity > TX_PULSE) = 0;
 
-f3 = figure(3);
+subplot(2,1,2);
 image(intensity, 'CDataMapping', 'scaled');
 title(['Intensity - After Removing Partial Scan Lines']);
