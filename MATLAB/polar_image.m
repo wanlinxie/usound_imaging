@@ -50,11 +50,25 @@ step_r=(radius_max-radius_min)/(M-1);
 xx=-r.*cos(theta*pi/180)-radius_min;
 yy=-r.*sin(theta*pi/180)-radius_min;
 figure(3);
-F=surface(yy,xx,im2double(I),'edgecolor','interp'); 
+max_xx = min(min(xx))
+
+% 
+% polaraxes(pax)
+% polarplot(1:100)
+% hold on
+
+XInc = 0.000002;
+Speed = 1540000;
+
+F=surface(yy,xx/abs(max_xx)*XInc*Speed*55/2,im2double(I),'edgecolor','interp'); 
 %plot3(yy,xx,1);
 colormap()
 axis on
 xlabel('X');
-ylabel('Y');
+ylabel('Distance(mm)');
 zlabel('Z');
+hold on
+
+
+
 %title('Scanning Image')
