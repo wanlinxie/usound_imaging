@@ -1,1 +1,0 @@
-# ultrasound_project_software
